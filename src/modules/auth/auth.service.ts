@@ -1,11 +1,12 @@
 import { LoginDto } from '@modules/auth/dto/login.dto';
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { LoginResponseDto } from './dto/login-response.dto';
 import * as bcrypt from 'bcrypt'
 import { User } from '@database/schemas/user.schema';
 import { ObjectId } from 'mongoose';
+import { EmailNotValidateException } from '@common/exceptions/email-not-validate.filter';
 
 @Injectable()
 export class AuthService {
@@ -14,8 +15,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(loginDto: LoginDto
-  ): Promise<LoginResponseDto> {
+  async signIn(loginDto: LoginDto): Promise<LoginResponseDto> {
     const data = await this.usersService.findOne({email: loginDto.username});
     
     if(data.user === null) {
@@ -24,6 +24,10 @@ export class AuthService {
 
     if (data.user.password !== loginDto.password) {
       throw new UnauthorizedException();
+    }
+
+    if (!data.user?.verified) {
+      throw new EmailNotValidateException()
     }
 
     const {access_token, refreshToken} = await this.generateTokens(data.id, data.user) 

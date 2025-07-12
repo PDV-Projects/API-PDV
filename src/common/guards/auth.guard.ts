@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { userDto } from '@modules/users/dto';
+import { userDto } from '@modules/users/dto/user.dto';
 import {
   CanActivate,
   ExecutionContext,
