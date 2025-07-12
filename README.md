@@ -1,6 +1,6 @@
 # API-PDV
 
-[![Ask DeepWiki](https://devin.ai/assets/askdeepwiki.png)](https://deepwiki.com/PDV-Projects/API-PDV)
+<!-- [![Ask DeepWiki](https://devin.ai/assets/askdeepwiki.png)](https://deepwiki.com/PDV-Projects/API-PDV) -->
 
 This repository contains the backend API for a Point of Sale (PDV) system, built with the NestJS framework. It provides core functionalities for user authentication, product management, and sales processing.
 
