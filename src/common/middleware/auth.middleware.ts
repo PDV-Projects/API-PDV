@@ -1,6 +1,6 @@
+import { invalidParamsException } from '@common/exceptions/invalid-params.exeption';
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
-import { invalidParams } from '@utils/helpers/invalidParamsMiddleware';
 
 @Injectable()
 export default class AuthMiddleware implements NestMiddleware {
@@ -21,8 +21,7 @@ export default class AuthMiddleware implements NestMiddleware {
     const password = req.query.password;
 
     if (username === undefined || password === undefined) {
-      invalidParams(res);
-      return;
+      throw new invalidParamsException()
     }
 
     req['data'] = { username, password };
