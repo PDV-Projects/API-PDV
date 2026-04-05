@@ -1,9 +1,9 @@
 import { LoginDto } from '@modules/auth/dto/login.dto';
-import { HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { LoginResponseDto } from './dto/login-response.dto';
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt';
 import { User } from '@database/schemas/user.schema';
 import { ObjectId } from 'mongoose';
 import { EmailNotValidateException } from '@common/exceptions/email-not-validate.filter';
@@ -16,10 +16,10 @@ export class AuthService {
   ) {}
 
   async signIn(loginDto: LoginDto): Promise<LoginResponseDto> {
-    const data = await this.usersService.findOne({email: loginDto.username});
-    
-    if(data.user === null) {
-      throw new UnauthorizedException()      
+    const data = await this.usersService.findOne({ email: loginDto.username });
+    console.log(data.user);
+    if (data.user === null) {
+      throw new UnauthorizedException();
     }
 
     if (data.user.password !== loginDto.password) {
@@ -27,20 +27,23 @@ export class AuthService {
     }
 
     if (!data.user?.verified) {
-      throw new EmailNotValidateException()
+      throw new EmailNotValidateException();
     }
 
-    const {access_token, refreshToken} = await this.generateTokens(data.id, data.user) 
+    const { access_token, refreshToken } = this.generateTokens(
+      data.id,
+      data.user,
+    );
 
-    await this.storeRefreshToken(data.id, refreshToken)
-    
+    await this.storeRefreshToken(data.id, refreshToken);
+
     return {
       access_token,
-      refreshToken: loginDto.refresh ? refreshToken : ''
+      refreshToken: loginDto.refresh ? refreshToken : '',
     };
   }
 
-  async generateTokens(id: ObjectId, user: User) {
+  generateTokens(id: ObjectId, user: User) {
     const payload = { sub: id, email: user.email };
 
     const access_token = this.jwtService.sign(payload, {});
@@ -57,7 +60,7 @@ export class AuthService {
     const hashed = await bcrypt.hash(token, 10);
     await this.usersService.update(userId, { refreshToken: hashed });
   }
-  
+
   async verifyRefreshToken(token: string) {
     try {
       const payload = this.jwtService.verify(token, {
@@ -76,5 +79,5 @@ export class AuthService {
     } catch {
       throw new UnauthorizedException('Invalid refresh token');
     }
-  } 
+  }
 }

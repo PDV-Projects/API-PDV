@@ -13,12 +13,12 @@ export class LoginValidationPipe implements PipeTransform<any> {
 
     // Converte para a classe DTO
     const loginDto = plainToClass(LoginDto, value);
-    
+
     // Valida o DTO
     const errors = await validate(loginDto, {
       skipMissingProperties: false, // Garante que campos obrigatórios sejam verificados
       whitelist: true, // Remove propriedades não decoradas
-      forbidNonWhitelisted: true // Rejeita propriedades não decoradas
+      forbidNonWhitelisted: true, // Rejeita propriedades não decoradas
     });
 
     if (errors.length > 0) {
@@ -37,3 +37,4 @@ export class LoginValidationPipe implements PipeTransform<any> {
     return loginDto;
   }
 }
+

@@ -1,7 +1,8 @@
-import { HttpException } from "@nestjs/common";
+import { HttpException } from '@nestjs/common';
 
 export class EmailNotValidateException extends HttpException {
   constructor() {
-    super('Email not validate', 452)
+    super('Email not validate', 452);
   }
 }
+

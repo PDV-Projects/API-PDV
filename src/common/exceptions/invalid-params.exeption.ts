@@ -1,7 +1,8 @@
-import { HttpException } from "@nestjs/common";
+import { HttpException } from '@nestjs/common';
 
 export class invalidParamsException extends HttpException {
   constructor() {
-    super('Invalid Params', 400)
+    super('Invalid Params', 400);
   }
 }
+

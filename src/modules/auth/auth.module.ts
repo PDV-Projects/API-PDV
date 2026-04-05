@@ -5,6 +5,7 @@ import { UsersModule } from '@modules/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import AuthMiddleware from '@common/middleware/auth.middleware';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthGuard } from '@common/guards/auth.guard';
 
 @Module({
   imports: [

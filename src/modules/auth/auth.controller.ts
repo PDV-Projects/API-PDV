@@ -16,7 +16,6 @@ import { Response } from 'express';
 import { LoginValidationPipe } from '@common/pipes/login-validation.pipe';
 import { LoginDto } from './dto/login.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { LoginResponseDto } from './dto/login-response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -25,10 +24,15 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(FileFieldsInterceptor([]))
   @Post('login')
-  async signIn(@Body(new LoginValidationPipe()) loginDto: LoginDto, @Res() res: Response) {
-    
-    const user = await this.authService.signIn({username: loginDto.username, password: loginDto.password, refresh: loginDto.refresh});
-  
+  async signIn(
+    @Body(new LoginValidationPipe()) loginDto: LoginDto,
+    @Res() res: Response,
+  ) {
+    const user = await this.authService.signIn({
+      username: loginDto.username,
+      password: loginDto.password,
+      refresh: loginDto.refresh,
+    });
     res.status(200).json(user);
   }
 
@@ -41,18 +45,15 @@ export class AuthController {
     return tokens;
   }
 
-
   @UseGuards(AuthGuard)
   @Get('profile')
   getProfile(@Req() req: AuthenticatedRequest) {
     return req.user;
   }
 
-  
-
   @UseGuards(AuthGuard)
   @Get('validateToken')
-  validateToken(@Req() req:Request, @Res() res: Response) {
-    res.status(200).json()
+  validateToken(@Req() req: Request, @Res() res: Response) {
+    res.status(200).json();
   }
 }
